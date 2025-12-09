@@ -2,6 +2,7 @@ package it.unibo.es1;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of the Logics interface.
@@ -9,7 +10,6 @@ import java.util.List;
 public class LogicsImpl implements Logics {
 
     private final List<Integer> values;
-    private final List<Boolean> enabled;
 
     /**
      * Constructor.
@@ -18,10 +18,8 @@ public class LogicsImpl implements Logics {
      */
     public LogicsImpl(final int size) {
         this.values = new ArrayList<>(size);
-        this.enabled = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             this.values.add(0);
-            this.enabled.add(true);
         }
     }
 
@@ -46,7 +44,15 @@ public class LogicsImpl implements Logics {
      */
     @Override
     public List<Boolean> enabledStates() {
-        return new ArrayList<>(this.enabled);
+        final List<Boolean> enabled = new ArrayList<>(this.size());
+        for (int i = 0; i < this.size(); i++) {
+            if (this.values.get(i) == this.size()) {
+                enabled.add(false);
+            } else {
+                enabled.add(true);
+            }
+        }
+        return enabled;
     }
 
     /**
@@ -54,11 +60,7 @@ public class LogicsImpl implements Logics {
      */
     @Override
     public int hit(final int elem) {
-        final int temp = this.values.get(elem);
-        if (temp == this.size() - 1) {
-            this.enabled.set(elem, false);
-        }
-        this.values.set(elem, temp + 1);
+        this.values.set(elem, this.values.get(elem) + 1);
         return this.values.get(elem);
     }
 
@@ -67,26 +69,9 @@ public class LogicsImpl implements Logics {
      */
     @Override
     public String result() {
-        boolean test = false;
-        for (Integer j = 0; j < this.size() - 1; j++) {
-            if (!this.values.get(j).equals(this.values.get(j + 1))) {
-                test = true;
-                break;
-            }
-        }
-        if (test) {
-            String res = "<<";
-            for (int i = 0; i < this.size(); i++) {
-                if (i == this.size() - 1) {
-                    res = res.concat(this.values.get(i).toString());
-                } else {
-                    res = res.concat(this.values.get(i).toString() + "|");
-                }
-            }
-            res = res.concat(">>");
-            return res;
-        }
-        return "";
+        return "<<" + this.values.stream()
+                                .map(String::valueOf)
+                                .collect(Collectors.joining("|")) + ">>";
     }
 
     /**
@@ -94,8 +79,8 @@ public class LogicsImpl implements Logics {
      */
     @Override
     public boolean toQuit() {
-        for (final Integer i : this.values) {
-            if (!i.equals(this.size())) {
+        for (int i = 0; i < this.size() - 1; i++) {
+            if (!this.values.get(i).equals(this.values.get(i + 1))) {
                 return false;
             }
         }
