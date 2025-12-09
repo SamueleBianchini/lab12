@@ -9,9 +9,9 @@ public interface Logics {
      * This method updates the button when hit.
      * 
      * @param pair the position of the button that got hit.
-     * @return the new character that the button has to display.
+     * @return the boolean representing what the button has to display.
      */
-    String hit(Pair<Integer, Integer> pair);
+    Boolean hit(Pair<Integer, Integer> pair);
 
     /**
      * This method checks if an ending position has been reached.

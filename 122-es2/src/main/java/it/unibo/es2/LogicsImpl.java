@@ -27,13 +27,13 @@ public final class LogicsImpl implements Logics {
     }
 
     @Override
-    public String hit(final Pair<Integer, Integer> pair) {
+    public Boolean hit(final Pair<Integer, Integer> pair) {
         if (!this.matrix.get(pair.x()).get(pair.y())) {
             this.matrix.get(pair.x()).set(pair.y(), true);
-            return "*";
+            return true;
         } else {
             this.matrix.get(pair.x()).set(pair.y(), false);
-            return " ";
+            return false;
         }
     }
 
